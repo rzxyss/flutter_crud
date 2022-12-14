@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class AddPage extends StatefulWidget {
@@ -8,10 +10,13 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+  TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference user = firestore.collection('user');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -38,6 +43,7 @@ class _AddPageState extends State<AddPage> {
           child: Column(
             children: [
               TextFormField(
+                controller: textController,
                 decoration: InputDecoration(
                   border: UnderlineInputBorder(),
                   hintText: 'Masukan datanya',
@@ -49,7 +55,12 @@ class _AddPageState extends State<AddPage> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  user.add({
+                    'text': textController.text,
+                  });
+                  textController.text = '';
+                },
                 child: Text('Add Data'),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
